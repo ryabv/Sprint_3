@@ -1,19 +1,11 @@
-import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import org.junit.Before;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class CreateOrderTest {
-    @Before
-    public void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru";
-        RestAssured.basePath = "/api/v1/orders";
-    }
+
+    OrderClient orderClient = new OrderClient();
 
     @Test
     @DisplayName("можно совсем не указывать цвет")
@@ -30,7 +22,7 @@ public class CreateOrderTest {
                 null
         );
 
-        createOrder(order).then().assertThat().statusCode(201);
+        orderClient.createOrder(order).then().assertThat().statusCode(201);
     }
 
     @Test
@@ -48,7 +40,7 @@ public class CreateOrderTest {
                 new String[]{"BLACK"}
         );
 
-        createOrder(order).then().assertThat().statusCode(201);
+        orderClient.createOrder(order).then().assertThat().statusCode(201);
     }
 
     @Test
@@ -66,7 +58,7 @@ public class CreateOrderTest {
                 new String[]{"GREY"}
         );
 
-        createOrder(order).then().assertThat().statusCode(201);
+        orderClient.createOrder(order).then().assertThat().statusCode(201);
     }
 
     @Test
@@ -84,7 +76,7 @@ public class CreateOrderTest {
                 new String[]{"BLACK", "GREY"}
         );
 
-        createOrder(order).then().assertThat().statusCode(201);
+        orderClient.createOrder(order).then().assertThat().statusCode(201);
     }
 
     @Test
@@ -102,15 +94,6 @@ public class CreateOrderTest {
                 new String[]{"BLACK", "GREY"}
         );
 
-        createOrder(order).then().assertThat().body("track", notNullValue());
-    }
-
-    @Step("Create order")
-    public Response createOrder(Order order) {
-        return given()
-            .header("Content-type", "application/json")
-            .and()
-            .body(order)
-            .post();
+        orderClient.createOrder(order).then().assertThat().body("track", notNullValue());
     }
 }
